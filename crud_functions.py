@@ -24,9 +24,6 @@ def initiate_db():
     balance INTEGER NOT NULL)
     ''')
 
-    connection.commit()
-    connection.close()
-
 def get_all_products():
     connection = sqlite3.connect("bot_products.db")
     cursor = connection.cursor()
@@ -56,6 +53,22 @@ def populate_db():
             30);
     ''')
     connection.commit()
+
+def add_user(username, email, age, balance=1000):
+    cursor.execute(
+        'INSERT INTO Users (username, email, age, balance) VALUES (?, ?, ?, ?)',
+        (username, email, age, balance))
+    connection.commit()
+
+
+def is_included(username):
+    return True \
+        if cursor.execute('SELECT COUNT(*) from Users WHERE username = ?',
+                          (username, )).fetchone()[0] \
+        else False
+
+
+
 
 if __name__ == '__main__':
     initiate_db()
