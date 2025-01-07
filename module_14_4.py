@@ -8,6 +8,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import asyncio
 from crud_functions import get_all_products
 
+products = get_all_products()
+
 api = ''
 bot = Bot(token = api)
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -37,15 +39,17 @@ class UserState(StatesGroup):
 
 
 @dp.message_handler(text=['Купить'])
-async def get_buy_list(message):
-    products = get_all_products()
+async def get_buying_list(message):
     for product in products:
         id, title, description, price = product
-        await message.answer(f'Название: {title} | ', f'Описание: {description} | ', f'Цена: {price}')
-        with open(f'Files/{id}product.png', 'rb') as img:
+        await message.answer(f'Название: {title} | '
+                             f'Описание: {description} | '
+                             f'Цена: {price}')
+        with open(f'files/{id}.png', 'rb') as img:
             await message.answer_photo(img)
 
-    await message.answer('Выберите продукт для покупки:', reply_markup=kb2)
+    await message.answer('Выберите продукт для покупки:',
+                         reply_markup=kb2)
 
 @dp.callback_query_handler(text='product_buying')
 async def send_confirm_message(call):
